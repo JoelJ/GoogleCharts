@@ -1,0 +1,40 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<html>
+		<head>
+			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+			<title>
+				Google Chart
+			</title>
+			<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+			<script type="text/javascript">
+				google.load('visualization', '1', {packages: ['corechart']});
+			</script>
+			<script type="text/javascript">
+				function drawVisualization() {
+					var dataArray = [${it.getJavascriptData(request.getParameter('buildCount') != null ? request.getParameter('buildCount') : "5", request.getParameter('filter') != null ? request.getParameter('filter') : ".*?" )}]
+					var data = google.visualization.arrayToDataTable(dataArray);
+
+					// Create and draw the visualization.
+					var ac = new google.visualization.AreaChart(document.getElementById('visualization'));
+					ac.draw(data, {
+						title : '${request.getParameter('title')}',
+						isStacked: true,
+						width: ${request.getParameter('width') != null ? request.getParameter('width') : 800 },
+						height: ${request.getParameter('width') != null ? request.getParameter('height') : 600 },
+						<!--focusTarget: "category",-->
+						vAxis: {title: "Time"},
+						hAxis: {title: "Build", direction: -1, slantedText: true},
+						titlePosition: 'in',
+						axisTitlesPosition: 'none',
+						<!--chartArea: {top: 0, left: 0, right: 0, bottom: 0}-->
+					});
+				}
+				google.setOnLoadCallback(drawVisualization);
+			</script>
+		</head>
+		<body style="font-family: Arial;border: 0 none;">
+			<div id="visualization"></div>
+		</body>
+	</html>
+	​
+</j:jelly>
